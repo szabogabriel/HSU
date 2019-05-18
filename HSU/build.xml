@@ -1,0 +1,38 @@
+<project name="hsu" basedir="." default="all">
+	
+	<property name="version" value="1.0.0"/>
+	
+	<property name="dir.src" value="${basedir}/src"/>
+	<property name="dir.bin" value="${basedir}/bin"/>
+	<property name="dir.lib" value="${basedir}/lib"/>
+	
+	<property name="file.jar" value="hsu_${version}.jar"/>
+	
+	<target name="all">
+		<antcall target="clean"/>
+		<antcall target="build"/>
+		<antcall target="package"/>
+	</target>
+	
+	<target name="clean">
+		<delete file="${file.jar}" quiet="true"/>
+	</target>
+	
+	<target name="build">
+		<javac srcdir="${dir.src}" destdir="${dir.bin}">
+			<classpath>
+				<fileset dir="${dir.lib}" includes="*.jar"/>
+			</classpath>
+		</javac>
+	</target>
+	
+	<target name="package">
+		<jar destfile="${file.jar}" basedir="${dir.bin}">
+			<manifest>
+				<attribute name="Specification-Title" value="Java Http Server Utility Classes"/>
+				<attribute name="Specification-Version" value="${version}"/>
+			</manifest>
+		</jar>
+	</target>
+	
+</project>
