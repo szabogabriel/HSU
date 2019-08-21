@@ -14,6 +14,7 @@ public class CookiesTest {
 	
 	private static HttpServer server;
 	
+	private static int counter = 0;
 	
 	public static void main(String [] args) throws IOException {
 		server = HttpServer.create(new InetSocketAddress(8080), 0);
@@ -30,10 +31,18 @@ public class CookiesTest {
 					e.printStackTrace();
 				}
 				
-				String response = "Heureka!";
+				String response = "Heureka! " + (++counter);
+
 				arg0.getResponseHeaders().set("Content-Type", "text/plain");
-				arg0.getResponseHeaders().add("Set-Cookie", "session=" + System.currentTimeMillis());
-				arg0.getResponseHeaders().add("Set-Cookie", "sessionid=" +(System.currentTimeMillis() * 2)+"; HttpOnly=true; Path=/");
+				
+				if (counter % 2 == 1) {
+					arg0.getResponseHeaders().add("Set-Cookie", "session=" + System.currentTimeMillis());
+					arg0.getResponseHeaders().add("Set-Cookie", "sessionid=" +(System.currentTimeMillis() * 2)+"; HttpOnly=true; Path=/");
+				} else {
+					arg0.getResponseHeaders().add("Set-Cookie", "session=;");
+					arg0.getResponseHeaders().add("Set-Cookie", "sessionid=; HttpOnly=true; Path=/");
+				}
+				
 				arg0.sendResponseHeaders(200, response.getBytes().length);
 				arg0.getResponseBody().write(response.getBytes());
 				arg0.getResponseBody().close();

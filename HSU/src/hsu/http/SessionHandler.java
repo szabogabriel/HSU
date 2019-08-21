@@ -21,10 +21,17 @@ public class SessionHandler extends AbstractCookieHandler {
 		Session ret = null;
 		if (sessionId.isPresent())
 			ret = new Session(sessionId.get(), false);
-		else
-			ret = new Session(generateSessionId(), true);
+		else {
+			String sid = generateSessionId();
+			ret = new Session(sid, true);
+			setCookieValue(generateCookie(sid));
+		}
 		
 		return ret;
+	}
+	
+	public void removeSession() {
+		setCookieValue(generateCookie(""));
 	}
 	
 	private Optional<String> getSessionCookieValue() {
@@ -54,8 +61,11 @@ public class SessionHandler extends AbstractCookieHandler {
 		
 		ret = ret * Math.random() * ret;
 		
-		
 		return ((long)ret) + "";
+	}
+	
+	private String generateCookie(String sid) {
+		return generateCookieString(SESSION_ID_COOKIE_NAME, sid);
 	}
 	
 }

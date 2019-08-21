@@ -13,7 +13,7 @@ public class Cookies extends AbstractCookieHandler {
 		super(httpExchange);
 	}
 	
-	public Map<String, String> getSessionValues() {
+	public Map<String, String> getValues() {
 		Map<String, String> ret = new HashMap<>();
 		
 		Optional<List<String>> cookies = getCookies();
@@ -24,8 +24,8 @@ public class Cookies extends AbstractCookieHandler {
 		return ret;
 	}
 	
-	public void addSessionValue(String key, String value) {
-		HTTP_EXCHANGE.getResponseHeaders().add(key, value);
+	public void setValue(String key, String value) {
+		setCookieValue(generateCookieString(key, value));
 	}
 
 }

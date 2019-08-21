@@ -29,6 +29,10 @@ public class AbstractCookieHandler {
 		return ret;
 	}
 	
+	protected void setCookieValue(String value) {
+		HTTP_EXCHANGE.getResponseHeaders().add("Set-Cookie", value);
+	}
+	
 	private boolean isCookieEntry(Entry<String, List<String>> httpEntry) {
 		boolean ret = HTTP_HEADER_REQUEST_COOKIE.equalsIgnoreCase(httpEntry.getKey());
 		return ret;
@@ -47,6 +51,10 @@ public class AbstractCookieHandler {
 	protected String getCookieValue(String cookie) {
 		String ret = getCookieParam(cookie, COOKIE_INDEX_VALUE);
 		return ret;
+	}
+	
+	protected String generateCookieString(String key, String value) {
+		return key + "=" + value + ";";
 	}
 	
 	private String getCookieParam(String cookie, int index) {
