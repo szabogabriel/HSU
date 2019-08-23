@@ -1,6 +1,8 @@
 package hsu.http;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.sun.net.httpserver.HttpExchange;
@@ -10,6 +12,8 @@ import hsu.http.session.Session;
 public class SessionHandler extends AbstractCookieHandler {
 
 	private final static String SESSION_ID_COOKIE_NAME = "SESSIONID";
+	
+	private final static Map<String, Long> LAST_ACCESSED = new HashMap<>();
 
 	public SessionHandler(HttpExchange exchange) {
 		super(exchange);
@@ -20,10 +24,10 @@ public class SessionHandler extends AbstractCookieHandler {
 		
 		Session ret = null;
 		if (sessionId.isPresent())
-			ret = new Session(sessionId.get(), false);
+			ret = new Session(sessionId.get(), (LAST_ACCESSED.containsKey(sessionId.get()) ? LAST_ACCESSED.get(sessionId.get()) : 0L),false);
 		else {
 			String sid = generateSessionId();
-			ret = new Session(sid, true);
+			ret = new Session(sid, System.currentTimeMillis(), true);
 			setCookieValue(generateCookie(sid));
 		}
 		
