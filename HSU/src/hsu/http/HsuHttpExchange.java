@@ -1,5 +1,6 @@
 package hsu.http;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.sun.net.httpserver.HttpExchange;
@@ -37,4 +38,29 @@ public class HsuHttpExchange {
 	public HttpExchange getExchange() {
 		return EXCHANGE;
 	}
+	
+	public Map<String, String> getAllParameters() {
+		Map<String, String> ret = new HashMap<>();
+		
+		
+		
+		return ret;
+	}
+	
+	public Map<String, String> getQueryStringParameters() {
+		Map<String, String> ret = new HashMap<>();
+		
+		String URI = EXCHANGE.getRequestURI().toString();
+		
+		if (containsQueryString(URI)) {
+			
+		}
+		
+		return ret;
+	}
+	
+	private boolean containsQueryString(String url) {
+		return url != null && url.contains("?") && url.indexOf('?') < url.length() - 1;
+	}
+	
 }

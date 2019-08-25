@@ -17,7 +17,7 @@ public class PostMultipartTest {
 			+ "  </head>"
 			+ "  <body>"
 			+ "    <h1>Test page</h1>"
-			+ "    <form method='POST' action='buildresults' enctype='multipart/form-data' >"
+			+ "    <form method='POST' action='/test' enctype='multipart/form-data' >"
 			+ "      <input type='text' name='first' id='first'></input><br/>"
 			+ "      <input type='text' name='second' id='second'></input><br/>"
 			+ "      <input type='submit' value='test' name='test' id='test'/>"
@@ -44,12 +44,14 @@ public class PostMultipartTest {
 					arg0.getResponseHeaders().add("Content-Type", "text/html");
 					arg0.sendResponseHeaders(200, page.length());
 					arg0.getResponseBody().write(page.getBytes());
+					arg0.getResponseBody().close();
 				} else
 				if ("POST".equalsIgnoreCase(method)) {
 					pm.upload(arg0);
 					arg0.getResponseHeaders().add("Content-Type", "text/html");
 					arg0.sendResponseHeaders(200, page.length());
 					arg0.getResponseBody().write(page.getBytes());
+					arg0.getResponseBody().close();
 				}
 			}
 		});
