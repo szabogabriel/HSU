@@ -35,12 +35,15 @@ public class QueryString {
 	private void saveData(String[] data) {
 		for (String it : data) {
 			String [] d = it.split("=");
-			if (d.length == 2)
-				if (d[0].length() > 0)
+			if (d.length == 2) {
+				if (d[0].length() > 0) {
 					DATA.put(d[0], d[1]);
-			else
-				if (it.length() > 0)
-					DATA.put(it, "");
+				}
+			} else {
+				if (d[0].length() > 0) {
+					DATA.put(d[0], "");
+				}
+			}
 		}
 	}
 	
