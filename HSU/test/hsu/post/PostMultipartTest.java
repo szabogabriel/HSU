@@ -25,10 +25,7 @@ public class PostMultipartTest {
 			+ "  </body>"
 			+ "</html>";
 	
-	private static PostMultipart pm = new PostMultipart();
-	
-	private static String firstValue = "";
-	private static String secondValue = "";
+	private static PostMultipart pm;
 	
 	public static void main(String [] args) throws IOException {
 		initUploadHandler();
@@ -60,45 +57,28 @@ public class PostMultipartTest {
 	}
 	
 	private static void initUploadHandler() {
-		pm.addHandler("first", new PostMultipartHandler() {
-			@Override public boolean isFilePart() {
-				System.out.println("first: isFilePart()");
+		pm = new PostMultipart(new PostMultipartHandler() {
+			@Override
+			public boolean isFilePart(String name) {
 				return false;
 			}
-			@Override public void handle(String name, File value) {
-				System.out.println("first: handle(String name, File value) -> " + name + ", " + value.toString());
+			
+			@Override
+			public void handle(String name, File value) {
 			}
-			@Override public void handle(String name, String value) {
-				System.out.println("first: handle(String name, String value) -> " + name + ", " + value);
-				firstValue = value; 
+			
+			@Override
+			public void handle(String name, String value) {
+				System.out.println("Handling name: " + name + ", value: " + value);
 			}
-			@Override public File getTargetFolder() {
-				System.out.println("first: getTargetFolder()");
-				return null; 
-			}
-			@Override public void error(Exception e) {
-				System.out.println("first: error()");
-			}
-		});
-		
-		pm.addHandler("second", new PostMultipartHandler() {
-			@Override public boolean isFilePart() {
-				System.out.println("second: isFilePart()");
-				return false;
-			}
-			@Override public void handle(String name, File value) {
-				System.out.println("second: handle(String name, File value) -> " + name + ", " + value.toString());
-			}
-			@Override public void handle(String name, String value) {
-				System.out.println("second: handle(String name, String value) -> " + name + ", " + value);
-				secondValue = value;
-			}
-			@Override public File getTargetFolder() {
-				System.out.println("second: getTargetFolder()");
+			
+			@Override
+			public File getTargetFolder() {
 				return null;
 			}
-			@Override public void error(Exception e) {
-				System.out.println("second: error()");
+			
+			@Override
+			public void error(Exception e, String name) {
 			}
 		});
 	}

@@ -4,7 +4,7 @@ import java.io.File;
 
 public interface PostMultipartHandler {
 	
-	boolean isFilePart();
+	boolean isFilePart(String name);
 	
 	File getTargetFolder();
 	
@@ -12,6 +12,6 @@ public interface PostMultipartHandler {
 	
 	void handle(String name, File value);
 	
-	void error(Exception e);
+	void error(Exception e, String name);
 
 }

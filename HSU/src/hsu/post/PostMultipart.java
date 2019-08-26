@@ -3,10 +3,7 @@ package hsu.post;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
@@ -18,37 +15,10 @@ import com.sun.net.httpserver.HttpExchange;
 
 public class PostMultipart {
 	
-	private final Map<String, WeakReference<PostMultipartHandler>> HANDLERS = new HashMap<>();
+	private final PostMultipartHandler HANDLER;
 	
-	public void addHandler(String fieldName, PostMultipartHandler handler) {
-		if (fieldName != null && handler != null) {
-			HANDLERS.put(fieldName, new WeakReference<>(handler));
-		}
-	}
-	
-	private void handle(String fieldName, FileItem fileItem) {
-		if (HANDLERS.containsKey(fieldName)) {
-			PostMultipartHandler handler = HANDLERS.get(fieldName).get();
-			if (handler != null) {
-				handle(fieldName, fileItem, handler);
-			}
-		}
-	}
-	
-	private void handle(String fieldName, FileItem fileItem, PostMultipartHandler handler) {
-		if (handler.isFilePart()) {
-			try {
-				File targetFolder = handler.getTargetFolder();
-				String fileName = fileItem.getName();
-				File targetFile = new File(targetFolder, fileName);
-				fileItem.write(targetFile);
-				handler.handle(fieldName, targetFile);
-			} catch (Exception e) {
-				handler.error(e);
-			}
-		} else {
-			handler.handle(fieldName, new String(fileItem.get()));
-		}
+	public PostMultipart(PostMultipartHandler handler) {
+		HANDLER = handler;
 	}
 	
 	public void upload(HttpExchange exchange) {
@@ -56,12 +26,39 @@ public class PostMultipart {
 			List<FileItem> result = createPostMessageItems(exchange);
 			
 			for (FileItem fi : result) {
-				String fieldName = fi.getFieldName();
-				
-				handle(fieldName, fi);
+				handle(fi);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	private void handle(FileItem fileItem) {
+		String fieldName = fileItem.getFieldName();
+		if (HANDLER.isFilePart(fieldName)) {
+			handleFileUpload(fieldName, fileItem);
+		} else {
+			handleParameterUpload(fieldName, fileItem);
+		}
+	}
+	
+	private void handleFileUpload(String fieldName, FileItem fileItem) {
+		try {
+			String fileName = fileItem.getName();
+			File targetFolder = HANDLER.getTargetFolder();
+			File targetFile = new File(targetFolder, fileName);
+			fileItem.write(targetFile);
+			HANDLER.handle(fieldName, targetFile);
+		} catch (Exception e) {
+			HANDLER.error(e, fieldName);
+		}
+	}
+	
+	private void handleParameterUpload(String fieldName, FileItem fileItem) {
+		try {
+			HANDLER.handle(fieldName, new String(fileItem.get()));
+		} catch (Exception e) {
+			HANDLER.error(e, fieldName);
 		}
 	}
 	
