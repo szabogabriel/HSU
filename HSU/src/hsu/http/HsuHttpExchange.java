@@ -6,6 +6,8 @@ import java.util.Map;
 import com.sun.net.httpserver.HttpExchange;
 
 import hsu.http.session.Session;
+import hsu.post.PostMultipartHandler;
+import hsu.post.UploadedElement;
 
 public class HsuHttpExchange {
 	
@@ -52,6 +54,14 @@ public class HsuHttpExchange {
 		
 		ret.putAll(QUERY_STRING.getData());
 		ret.putAll(COOKIES.getValues());
+		
+		return ret;
+	}
+	
+	public Map<String, UploadedElement> getAllParameters(PostMultipartHandler handler) {
+		Map<String, UploadedElement> ret = new HashMap<>();
+		
+		//TODO
 		
 		return ret;
 	}
