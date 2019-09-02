@@ -1,7 +1,6 @@
 package hsu.http;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -44,19 +43,12 @@ public class SessionHandler extends AbstractCookieHandler {
 		return ret;
 	}
 	
-	private Optional<String> getSessionCookieValue(Optional<List<String>> cookies) {
+	private Optional<String> getSessionCookieValue(Map<String, String> cookies) {
 		Optional<String> ret = Optional.empty();
 		
-		if (cookies.isPresent()) 
-			for (String it : cookies.get())
-				if (isSessionCookie(it))
-					ret = Optional.of(getCookieValue(it));
+		if (cookies.containsKey(SESSION_ID_COOKIE_NAME))
+			ret = Optional.of(cookies.get(SESSION_ID_COOKIE_NAME));
 		
-		return ret;
-	}
-	
-	private boolean isSessionCookie(String cookie) {
-		boolean ret = (cookie != null) && cookie.startsWith(SESSION_ID_COOKIE_NAME) && cookie.contains("=") && !cookie.endsWith("=");
 		return ret;
 	}
 	
