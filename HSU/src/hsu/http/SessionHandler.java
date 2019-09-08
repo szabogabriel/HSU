@@ -8,14 +8,16 @@ import com.sun.net.httpserver.HttpExchange;
 
 import hsu.http.session.Session;
 
-public class SessionHandler extends AbstractCookieHandler {
+public class SessionHandler {
 
 	private final static String SESSION_ID_COOKIE_NAME = "SESSIONID";
 	
 	private final static Map<String, Long> LAST_ACCESSED = new HashMap<>();
+	
+	private HttpRequestHandler HANDLER;
 
-	public SessionHandler(HttpExchange exchange) {
-		super(exchange);
+	public SessionHandler(HttpRequestHandler handler) {
+		HANDLER = handler;
 	}
 
 	public Session getSession() {
@@ -58,10 +60,6 @@ public class SessionHandler extends AbstractCookieHandler {
 		ret = ret * Math.random() * ret;
 		
 		return ((long)ret) + "";
-	}
-	
-	private String generateCookie(String sid) {
-		return generateCookieString(SESSION_ID_COOKIE_NAME, sid);
 	}
 	
 }

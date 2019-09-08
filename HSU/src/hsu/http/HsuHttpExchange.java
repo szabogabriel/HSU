@@ -12,14 +12,10 @@ import hsu.post.UploadedElement;
 public class HsuHttpExchange {
 	
 	private final HttpExchange EXCHANGE;
-	private final SessionHandler SESSION;
-	private final Cookies COOKIES;
 	private final QueryString QUERY_STRING;
 	
 	public HsuHttpExchange(HttpExchange exchange) {
 		EXCHANGE = exchange;
-		SESSION = new SessionHandler(exchange);
-		COOKIES = new Cookies(exchange);
 		
 		String URI = EXCHANGE.getRequestURI().toString();
 		if (containsQueryString(URI)) {
@@ -30,19 +26,18 @@ public class HsuHttpExchange {
 	}
 	
 	public Map<String, String> getValues() {
-		return COOKIES.getValues();
+		return null;
 	}
 
-	public void setValue(String key, String value) {
-		COOKIES.setValue(key, value);
+	public void setValue(Cookie cookie) {
+		
 	}
 	
 	public Session getSession() {
-		return SESSION.getSession();
+		return null;
 	}
 	
 	public void removeSession() {
-		SESSION.removeSession();
 	}
 	
 	public HttpExchange getExchange() {
@@ -53,7 +48,6 @@ public class HsuHttpExchange {
 		Map<String, String> ret = new HashMap<>();
 		
 		ret.putAll(QUERY_STRING.getData());
-		ret.putAll(COOKIES.getValues());
 		
 		return ret;
 	}
