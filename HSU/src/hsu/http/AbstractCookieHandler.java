@@ -1,9 +1,11 @@
 package hsu.http;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.sun.net.httpserver.HttpExchange;
 
@@ -19,12 +21,12 @@ public class AbstractCookieHandler {
 		HTTP_EXCHANGE = exchange;
 	}
 	
-	protected Optional<List<String>> getCookies() {
-		Optional<List<String>> ret = Optional.empty();
+	protected Map<String, String> getCookies() {
+		Map<String, String> ret = new HashMap<>();
 		
 		for (Entry<String, List<String>> it : getHttpRequestEntries())
-			if (isCookieEntry(it)) 
-				ret = Optional.of(it.getValue());
+			if (isCookieEntry(it))
+				ret.putAll(parseCookies(it.getValue()));
 		
 		return ret;
 	}
@@ -35,6 +37,37 @@ public class AbstractCookieHandler {
 	
 	private boolean isCookieEntry(Entry<String, List<String>> httpEntry) {
 		boolean ret = HTTP_HEADER_REQUEST_COOKIE.equalsIgnoreCase(httpEntry.getKey());
+		return ret;
+	}
+	
+	private Map<String, String> parseCookies(List<String> cookies) {
+		Map<String, String> ret = new HashMap<>();
+		
+		for (String it : cookies) 
+			ret.putAll(parseCookies(it));
+		
+		return ret;
+	}
+	
+	private Map<String, String> parseCookies(String cookies) {
+		if (cookies != null)
+			return parseCookies(cookies.split(";"));
+		
+		return new HashMap<>();
+	}
+	
+	private Map<String, String> parseCookies(String[] cookies) {
+		Map<String, String> ret = new HashMap<>();
+		Arrays.asList(cookies)
+			.stream()
+			.map(S -> S.split("="))
+			.forEach(D -> {
+				if (D.length == 2)
+					ret.put(D[0], D[1]);
+				else 
+					ret.put(D[0], "");
+			});
+			
 		return ret;
 	}
 	
