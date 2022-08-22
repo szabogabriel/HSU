@@ -1,5 +1,6 @@
 package hsu.http;
 
+import java.net.HttpCookie;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +19,7 @@ public class HttpRequestHandler {
 		HTTP_EXCHANGE = exchange;
 	}
 	
-	protected void setCookieValue(Cookie cookie) {
+	protected void setCookieValue(HttpCookie cookie) {
 		HTTP_EXCHANGE.getResponseHeaders().add("Set-Cookie", cookie.toString());
 	}
 	

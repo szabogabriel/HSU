@@ -37,14 +37,22 @@ public class QueryString {
 			String [] d = it.split("=");
 			if (d.length == 2) {
 				if (d[0].length() > 0) {
-					DATA.put(d[0], d[1]);
+					saveData(d[0], d[1]);
 				}
 			} else {
 				if (d[0].length() > 0) {
-					DATA.put(d[0], "");
+					saveData(d[0], "");
 				}
 			}
 		}
+	}
+	
+	private void saveData(String key, String value) {
+		String tmpValue = value;
+		if (DATA.containsKey(key) && DATA.get(key).trim().length() > 0 && value.trim().length() > 0) {
+			tmpValue = DATA.get(key) + ", " + value;
+		}
+		DATA.put(key, tmpValue);
 	}
 	
 }
